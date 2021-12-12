@@ -15,6 +15,9 @@ class Variable:
         self.grad = None
         self.creator = None
 
+    def cleargrad(self):
+        self.grad = None
+
     def set_creator(self, func):
         self.creator = func
 
@@ -31,7 +34,10 @@ class Variable:
                 gxs = (gxs,) #タプルでない場合はタプルに戻す
 
             for x, gx in zip(f.inputs, gxs): # f.inputs[i]の微分はgxs[i]. zipは複数のイテラブルをまとめる関数
-                x.grad = gx
+                if x.grad is None:
+                    x.grad = gx
+                else:
+                    x.grad = x.grad + gx # インプレース演算では書けないことに注意
 
                 if x.creator is not None:
                     funcs.append(x.creator)
@@ -84,7 +90,7 @@ class Exp(Function):
         return np.exp(x)
 
     def backward(self, gy):
-        x = self.input[0].data #多変数化へ対応
+        x = self.inputs[0].data #多変数化へ対応
         gx = np.exp(x) * gy
         return gx
 

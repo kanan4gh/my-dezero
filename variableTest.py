@@ -4,12 +4,13 @@
 # ここのコメント文はMarkdown形式で保存できます。
 
 #%%
+# 
 if '__file__' in globals():
     import os, sys
     sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 import numpy as np
-from dezero import Variable, Square, square, Exp, exp, as_array, numerical_diff
+from dezero import Variable, Square, square, Exp, exp, as_array, Add, add, numerical_diff
 
 #%%
 # numpy.arrayで変数オブジェクトを作成する
@@ -41,17 +42,6 @@ y = square(x)
 print(type(y))
 print(y.data)
 
-#%%
-# 数値微分関数の定義(中心差分近似)
-# f(x+h)-f(x-h)/2h 
-# le-4=0.0001
-def numerical_diff(f, x, eps=1e-4):
-    x0 = Variable(as_array(x.data - eps))
-    x1 = Variable(as_array(x.data + eps))
-    y0 = f(x0)
-    y1 = f(x1)
-    return (y1.data - y0.data) / (2 * eps)
-
 f = Square()
 x = Variable(np.array(2.0))
 dy = numerical_diff(f,x)
@@ -67,11 +57,11 @@ print(y.data)
 
 #逆向きに計算グラフのノードを辿る
 assert isinstance(y.creator, Square)
-assert y.creator.input == b
-assert isinstance(y.creator.input.creator, Exp)
-assert y.creator.input.creator.input == a
-assert isinstance(y.creator.input.creator.input.creator, Square)
-assert y.creator.input.creator.input.creator.input == x
+assert y.creator.inputs[0] == b
+assert isinstance(y.creator.inputs[0].creator, Exp)
+assert y.creator.inputs[0].creator.inputs[0] == a
+assert isinstance(y.creator.inputs[0].creator.inputs[0].creator, Square)
+assert y.creator.inputs[0].creator.inputs[0].creator.inputs[0] == x
 
 y.backward()
 print(x.grad)
@@ -90,3 +80,29 @@ try:
 except TypeError as e:
     print(e)
 
+#%% 変数を繰り返す使う
+#
+x = Variable(np.array(3.0))
+y = add(x, x)
+print('y', y.data)
+
+y.backward()
+print('x.grad', x.grad)
+
+# %% インプレース演算の検証
+#
+x = np.array(1.0)
+print(id(x))
+y = x
+print(id(y))
+y += x
+print(x, y, id(x), id(y))
+
+x = np.array(1.0)
+print(id(x))
+y = np.array(2.0)
+print(id(y))
+y = y +x
+print(y, id(x), id(y))
+
+# %%

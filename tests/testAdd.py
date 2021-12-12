@@ -25,5 +25,25 @@ class AddTest(unittest.TestCase):
         self.assertEqual(x.grad, 4)
         self.assertEqual(y.grad, 6)
 
+    def test_multi2(self):
+        x = Variable(np.array(3.0))
+        y = add(add(x, x), x)
+
+        y.backward()
+        self.assertEqual(x.grad, 3.0)
+
+    def test_multi3(self):
+        x = Variable(np.array(3.0))
+        y = add(x, x)
+        y.backward()
+        self.assertEqual(x.grad, 2.0)
+
+        # 2回目の計算（同じxを使って、別の計算を行う）
+        x.cleargrad()
+        y = add(add(x, x), x)
+        y.backward()
+        self.assertEqual(x.grad, 3.0)
+    
+
 unittest.main()
 
