@@ -4,7 +4,7 @@ if '__file__' in globals():
 
 import unittest
 import numpy as np
-from dezero import Config, Variable, add, square, using_config, no_grad
+from dezero import Variable, add, square, using_config, no_grad
 
 #
 # メモリ使用量を減らすモードを追加する
@@ -35,9 +35,10 @@ class ReducemomoryTest(unittest.TestCase):
         self.assertEqual(x1.grad, 1.0)
 
     def test_no_config_enable_backprop(self):
-        Config.enable_backprop = False
-        x = Variable(np.ones((100, 100, 100)))
-        y = square(square(square(x)))
+        # Config.enable_backprop = False
+        with using_config("enable_backprop", False):
+            x = Variable(np.ones((100, 100, 100)))
+            y = square(square(square(x)))
 
     def test_using_config(self):
         with using_config("enable_backprop", False):
