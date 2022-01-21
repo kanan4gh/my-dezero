@@ -1,6 +1,6 @@
 # ===============================================================
 # step23.pyからstep32.pyまではsimple_coreを利用
-is_simple_core = True
+is_simple_core = False
 # ===============================================================
 
 if is_simple_core:
@@ -23,7 +23,15 @@ if is_simple_core:
     from dezero.core_simple import numerical_diff
 
 else:
-    from dezero.core_simple import Variable, setup_variable
+    from dezero.core import Variable
+    from dezero.core import Function
+    from dezero.core import using_config
+    from dezero.core import no_grad
+    from dezero.core import as_array
+    from dezero.core import as_variable
+    from dezero.core import setup_variable
+    import dezero.functions
+
 
 setup_variable()
 __version__ = '0.0.13'
