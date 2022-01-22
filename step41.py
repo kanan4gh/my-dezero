@@ -2,7 +2,7 @@ from dezero import Variable
 import dezero.functions as F
 import numpy as np
 
-# 線形回帰対応
+# 行列計算のテスト
 
 x = Variable(np.random.randn(2, 3))
 W = Variable(np.random.randn(3, 4))
