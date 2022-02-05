@@ -1,6 +1,7 @@
 import numpy as np
 from dezero import Variable
 import dezero.functions as F
+import matplotlib.pyplot as plt
 
 # トイデータセット
 np.random.seed(0)
@@ -36,3 +37,8 @@ for i in range(iters):
     b.data -= lr * b.grad.data
     print(W, b, loss)
 
+fig = plt.figure()
+ax = fig.add_subplot(1,1,1)
+ax.scatter(x.data, y.data, c='blue')
+ax.scatter(x.data, y_pred.data, c='red')
+plt.show()
