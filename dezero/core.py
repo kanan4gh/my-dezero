@@ -271,6 +271,7 @@ def setup_variable():
     Variable.__truediv__ = div
     Variable.__rtruediv__ = rdiv
     Variable.__pow__ = pow
+    Variable.__getitem__ = dezero.functions.get_item
 
 def numerical_diff(f, x, eps=1e-4):
     x0 = Variable(as_array(x.data - eps))
